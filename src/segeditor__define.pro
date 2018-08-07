@@ -12,10 +12,6 @@ pro segeditor_draw_event,event
   widget_control,event.id,get_uval=self
   self->DrawEvent,event
 end
-;pro segeditor_scalebutton,event
-;  widget_control,event.top,get_uval=self
-;  self->ScaleButton,event
-;end
 
 
 pro segeditor_cleanup,base,FORCE=force
@@ -127,15 +123,7 @@ pro segeditor::tabulate,event
   endelse     
 end
 pro segeditor::help,event
-;  if widget_info(self.hid,/valid) then begin
-;     widget_control,self.hid,/show
-;  endif else begin
-;     psep=path_sep()
-;     file=strjoin([self.install,'..','etc','help','segeditor.help'],psep)
-;     xdisplayfile,file,group=event.top,width=80,$
-;                  /grow,title='Segeditor Help',done='Close',return_id=hid
-;     self.hid=hid
-;  endelse
+  psep=path_sep()
   book=strjoin([self.install,'..','etc','help','segeditor.html'],psep)
   online_help,book=book  
 end
@@ -476,11 +464,6 @@ pro segeditor::space,event
      endif else quit=0b
   endrep until quit || (i++ eq n)
 end
-;pro segeditor::ScaleButton,event
-;  for i=0,n_elements(self.wscale)-1 do widget_control,self.wscale[i],set_but=0b
-;  widget_control,event.id,get_val=type,set_button=1b
-;  self->SetImage,TYPE=type
-;end
 
 
 pro segeditor::DeleteRegion,event,ALL=all,SEGID=Segid
@@ -1339,9 +1322,6 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   q=widget_button(util,value=bmpdir+'dm.bmp',tooltip='Tabulate Regions',$
                   /bitmap,uname='tabulate',flat=flat)
 
-;  q=widget_button(util,value=bmpdir+'switch_down.bmp',$
-;                  tooltip='Compress to lowest integers',/bitmap,$
-;                  uname='compress')
   q=widget_button(util,value=bmpdir+'gears.bmp',/bitmap,$
                   tooltip='Other Image Operations',$
                   uname='operations',flat=flat)
@@ -1363,31 +1343,6 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   self->SetMode,self.mode
 
 
-
-;  menu=widget_base(self.wdraw,/context_menu)
-;  self.wscale[0]=widget_button(menu,val='log',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[1]=widget_button(menu,val='linear',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[2]=widget_button(menu,val='power law',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[3]=widget_button(menu,val='sqrt',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[4]=widget_button(menu,val='square',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[5]=widget_button(menu,val='asinh',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  self.wscale[6]=widget_button(menu,val='sinh',/check,$
-;                               event_pro='segeditor_scalebutton')
-;  widget_control,self.wscale[0],set_button=1b
-;  widget_control,self.wscale[1],set_button=0b
-;  widget_control,self.wscale[2],set_button=0b
-;  widget_control,self.wscale[3],set_button=0b
-;  widget_control,self.wscale[4],set_button=0b
-;  widget_control,self.wscale[5],set_button=0b
-;  widget_control,self.wscale[6],set_button=0b
-;  self.wmenu=menu
-
   ;to center the widget in the screen
   q=widget_info(self.base,/geom)
   device,get_screen_size=ss
@@ -1401,8 +1356,7 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   
   ;https://metacpan.org/pod/X11::CursorFont 
   widget_control,self.wdraw,get_value=oWindow
-  ;40 for erase, 124 for paint, 86 for drawing
-  oWindow->SetCurrentCursor,standard=40
+  oWindow->SetCurrentCursor,standard=40 ;40=erase, 124=paint, 86=drawing
   self.oWindow=oWindow
   self.oView=obj_new('IDLgrView',view=[0,0,self.winsize,self.winsize],$
                     color=self.background)
@@ -1437,9 +1391,7 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   pos[0,*]=replicate(self.margin*self.winsize,2)
   pos[1,*]=self.winsize*(1-0.5*self.margin-[1,2]*self.charsize)
   self->ConvertXY,pos[0,*],pos[1,*],x,y
-;  self.oXY=obj_new("oText",['x:','y:'],self.winsize,/top,/right,$
-;                   char_dim=char_dim,color=textcolor,name='pixel coord',$
-;                   descrip='X/Y Coordinates')  
+
   self.oXY=obj_new('IDLgrText',strings=['x:','y:'],$
                    char_dim=char_dim,uval=pos,loc=[x,y],$
                    color=textcolor,align=0.,name='pixel coord',$
@@ -1451,10 +1403,6 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   pos[1,*]=self.winsize*([2,1]*self.charsize-1.5*self.margin)
   self->ConvertXY,pos[0,*],pos[1,*],x,y
 
-;  self.oAD=obj_new("oText",strings=['x:','y:'],$
-;                   char_dim=char_dim,uval=pos,loc=[x,y],$
-;                   color=textcolor,align=0.,name='ra/dec',$
-;                   descrip='RA/Dec Positions') 
   self.oAD=obj_new('IDLgrText',strings=['',''],$
                    char_dim=char_dim,uval=pos,loc=[x,y],$
                    color=textcolor,align=0.,name='ra/dec',$
@@ -1465,10 +1413,7 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   pos[0,*]=replicate(self.winsize*(1-self.margin),2)
   pos[1,*]=self.winsize*(1-0.5*self.margin-[1,2]*self.charsize)
   self->ConvertXY,pos[0,*],pos[1,*],x,y
-;  self.oVal=obj_new("oText",strings=['x:','y:'],$
-;                    char_dim=char_dim,uval=pos,loc=[x,y],$
-;                    color=textcolor,align=0.,name='pixel value',$
-;                    descrip='Image Values')
+
   self.oVal=obj_new('IDLgrText',strings=[':seg',':img'],$
                     char_dim=char_dim,uval=pos,loc=[x,y],$
                     color=textcolor,align=1.,name='pix value',$
@@ -1478,15 +1423,6 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   pos[0,*]=replicate(self.winsize*(1-self.margin),2)
   pos[1,*]=self.winsize*([2,1]*self.charsize-1.5*self.margin)
   self->ConvertXY,pos[0,*],pos[1,*],x,y
-
-;  self.oMin=obj_new("oText",strings=['x:','y:'],$
-;                   char_dim=char_dim,uval=pos,loc=[x,y],$
-;                   color=textcolor,align=0.,name='minimum',$
-;                  descrip='Min Value') 
-;  self.oMax=obj_new("oText",strings=['x:','y:'],$
-;                   char_dim=char_dim,uval=pos,loc=[x,y],$
-;                   color=textcolor,align=0.,name='maximum',$
-;                   descrip='Max Value')
 
   self.oMin=obj_new('IDLgrTextEdit',strings=[''],$
                     char_dim=char_dim,uval=pos[*,0],loc=[x[0],y[0]],$
@@ -1566,9 +1502,6 @@ function segeditor::init,segfile,imgfile,WINSIZE=winsize,$
   
   widget_control,hourglass=0b
 
-;  q=widget_info(self.base,/geom)
-;  maxsize=((ss[1]-24-61)-q.xsize)+self.winsize
-
 
   ;register some data
   self->RegisterProperty,'eraser',/float,$
@@ -1638,7 +1571,6 @@ pro segeditor__define
      base:0l,$
      install:'',$
      dim:[0l,0l],$ 
-;     hid:0l,$
      wop:0l,$
      winsize:0.,$
      wdraw:0l,$
@@ -1647,8 +1579,6 @@ pro segeditor__define
      wredo:0l,$
      wclear:0l,$
      wleft:lonarr(8),$
-;     wscale:lonarr(7),$
-;     wmenu:0l,$
      oWindow:obj_new(),$
      oView:obj_new(),$
      oImages:obj_new(),$
