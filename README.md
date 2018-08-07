@@ -1,5 +1,7 @@
 # Segmentation Editor: SegEditor
 
+![SegEditor](etc/help/segeditor.png)
+
 A Graphical-User Interface (GUI) for editing segmentation maps for IDL.
 
 ## Getting Started
