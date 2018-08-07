@@ -1,0 +1,238 @@
+<html>
+  <body>
+
+    <table>
+      <td><img src="segeditor.png" height="200"></td>
+      <td>
+	<h1>Segmentation Image Editor: <tt>SegEditor</tt></h1>
+	<h2>by: Russell Ryan</h2>
+	<address>
+	  Space Telescope Science Institute<br>
+	  3700 San Martin Dr.<br>
+	  Baltimore MD, 21218<br>
+	  <a href="mailto:rryan@stsci.edu?Subject=SegEditor">rryan@stsci.edu</a>
+	</address>
+      </td>
+    </table>
+    
+    
+    <h2>Abstract</h2>
+    <p> This  is designed to  edit a  segmentation map, such  as those
+      produced          by          <tt>Source          Extractor</tt>
+      (<a href="http://adsabs.harvard.edu/abs/1996A%26AS..117..393B">Bertin
+      & Arnouts  1996</a>), in  a graphical-user interface  (GUI).  It
+      requires the  segmentation map and a  corresponding direct image
+      (ideally,  the   one  from   which  the  segmentation   map  was
+      generated).   It  loads these  two  images  into two  panes  and
+      provides  basic  functionality to  zoom,  pan,  and stretch  the
+      images individually.  For additional information or if you would
+      like  to  reference  this  software,  please  see  the  astro-ph
+      listing: <a href="url">Ryan (2018)</a>.   The latest versions of
+      the       software       can        be       obtained       from
+      GitHub: <a href="https://github.com/Russell-Ryan/segeditor">https://github.com/Russell-Ryan/segeditor</a>.</p>
+ 
+    <h2>Calling Sequence</h2>
+    <p>This  is a  fully  object-oriented suite,  and  so the  calling
+      sequence is:</p>
+    
+    <tt>
+      IDL> object = obj_new('segeditor',SEGFILE,IMGFILE,[GROUP=group])
+    </tt>
+    
+    <p>where  <tt>SEGFILE</tt> and  <tt>IMGFILE</tt> are  strings that
+      point   to    the   segmentation    map   and    direct   image,
+      respectively.  <tt>GROUP</tt> is  a valid widget ID  to serve as
+      the  group  leader,  if  linking from  a  separate  widget-based
+      program.  It  is assumed  that the User  will ensure  that these
+      files    exist    and    have    the    same    WCS    keywords,
+      as   <tt>SegEditor</tt>   currently   does  not   verify   these
+      things.  Alternatively, the code can be envoked using a classic
+      procedural mechanism:</p>
+
+    <tt>
+      IDL> segeditor,SEGFILE,IMGFILE,[/help,_EXTRA=_extra]
+    </tt>
+
+    <p>where <tt>SEGFILE</tt> and <tt>IMGFILE</tt> have the same meaing
+      as before, but <tt>/help</tt> displays a basic help menu.  The
+      <tt>_EXTRA=_extra</tt>  facilitates passing  additional keywords
+      to the object creation. This  calling sequence does perform some
+      WCS verification,  and so is generally  prefered.  The automatic
+      garbage  collection in  <tt>IDL</tt> will  destroy the  internal
+      object reference.</p>
+
+    
+    <h2>Controls</h2>
+    <p>Most of the controls are driven  by the mouse and the keyboard.
+      To activate the  commands, it is generally  necessary to left-click
+      on the image of interest, then the commands are:</p>
+    <table>
+      <caption>Left Mouse Button Actions</caption>
+      <tr>
+	<th>Name</th><th>Symbol</th><th>Description</th>
+      </tr>
+      <tr>
+	<td>pointer</td><td><img src="../bitmaps/arrow.bmp"></td><td>Basic
+      	  mouse  state, has  no  real functions  other than  nomal
+      	  image pan, zoom, stretch.</td>
+      </tr>
+      
+      <tr>
+	<td>delete</td><td><img src="../bitmaps/select.bmp"></td><td>Click
+	  on a region to delete it</td>
+      </tr>
+      
+      <tr>
+	<td>merge</td><td><img src="../bitmaps/group.bmp"></td><td>Drag
+	  a line to join two regions</td>
+      </tr>
+      
+      <tr>
+	<td>erase</td><td><img src="../bitmaps/button.bmp"></td><td>Drag
+	  to erase pixels under the cursor</td>
+      </tr>
+      
+      <tr>
+	<td>draw</td><td><img src="../bitmaps/segpoly.bmp"></td><td>Drag
+	  to draw a closed region and create a new source</td>
+      </tr>
+      
+      <tr>
+	<td>ungroup</td><td><img src="../bitmaps/drawing.bmp"></td><td>Click
+	  to disassociate a region from its parent</td>
+      </tr>
+      
+      <tr>
+	<td>paint</td><td><img src="../bitmaps/paint.bmp"></td><td>Click
+	  and drag to paint a given SegID to the pixels</td>
+      </tr>
+      
+      <tr>
+	<td>range</td><td><img src="../bitmaps/rectangl.bmp"></td><td>Drag
+     	  to draw a box and  compute min/max range from the pixels
+     	  in the box (statistics methods can be changed)</td>
+      </tr>
+    </table>
+    
+    <table>
+      <caption>Right Mouse Button <img src="../bitmaps/rgba.bmp"></caption>
+      <tr>
+	<th>State</th><th>Description</th>
+      </tr>
+      <tr>
+	<td>engaged</td><td>adjust   the  opacity   between  the   RGB
+      	  displayed  segmentation  image   and  the  grayscale
+      	  direct image</td>
+      </tr>
+      <tr>
+	<td>disengaged</td><td>adjust    the     bias/contrast    <i>a
+	la</i> <tt>ds9</tt> scaling</td>
+      </tr>
+    </table>
+    
+    
+    <table>
+      <caption>Keyboard Shortcuts</caption>
+      <tr>
+	<th>Key</th><th>Description</th>
+      </tr>
+      <tr>
+	<td>SPACE</td><td>step the form of the left mouse button</td>
+      </tr>
+      
+      <tr>
+	<td>Q</td><td>Force quit the GUI</td>
+      </tr>
+      <tr>
+	<td>p</td><td>print the image to a postscript file</td>
+      </tr>
+      <tr>
+	<td>q</td><td>quit the GUI</td>
+      </tr>
+      <tr>
+	<td>r</td><td>redo last region event</td>
+      </tr>
+      <tr>
+	<td>s</td><td>save the segmentation map</td>
+      </tr>
+      <tr>
+	<td>u</td><td>undo the last region event</td>
+      </tr>      
+    </table>
+        
+    
+    <h2>Additional Buttons</h2>
+    <p>These buttons facilitate a variety of operations:</p>
+    <table>
+      <caption>Additional Functionality</caption>
+      <tr>
+	<th>Name</th><th>Symbol</th><th>Description</th>
+      </tr>
+      <tr>
+	<td>new</td><td><img src="../bitmaps/new.bmp"></td><td>Erase
+	  all the regions to create a blank segmentation map</td>
+      </tr>
+      
+      <tr>
+	<td>save</td><td><img src="../bitmaps/save.bmp"></td><td>Save
+	  the current segmentation map</td>
+      </tr>
+      
+      <tr>
+	<td>prefs</td><td><img src="../bitmaps/propsheet.bmp"></td><td>Edit
+	  the properties of the GUI
+	</td>
+      </tr>
+      
+      <tr>
+	<td>text</td><td><img src="../bitmaps/text.bmp"></td><td>Edit
+	  the properties of the texts</td>
+      </tr>
+      
+      <tr>
+	<td>undo</td><td><img src="../bitmaps/stepback.bmp"></td><td>Undo
+	  the last region action</td>
+      </tr>
+      
+      <tr>
+	<td>clear</td><td><img src="../bitmaps/stop.bmp"></td><td>Clear
+	  the undo/redo history</td>
+      </tr>
+      <tr>
+	<td>redo</td><td><img src="../bitmaps/step.bmp"></td><td>Redo
+	  the last region action</td>
+      </tr>
+      <tr>
+	<td>table</td><td><img src="../bitmaps/dm.bmp"></td><td>Inspect
+	  the regions properties in a tabular way</td>
+      </tr>
+      <tr>
+	<td>operations</td><td><img src="../bitmaps/gears.bmp"></td><td>Open
+	  sub-GUI to perform additional image operations (dilating and
+	  eroding  regions,  and  truncating  to  the  lowest  set  of
+	  positive integers)</td>
+      </tr>
+      <tr>
+	<td>random</td><td><img src="../bitmaps/ran.bmp"></td><td>Define
+	  a new set of random RGB triplets for the segmentation map</td>	
+      </tr>
+      <tr>
+	<td>help</td><td><img src="../bitmaps/help.bmp"></td><td>View
+	  this help page</td>
+      </tr>
+    </table>
+
+
+    <h2>Edit Properties</h2>
+    <p>There are several properties  governing the cursor, zoom speed,
+      text  displays, statistics  methods,  and stetching  parameters,
+      which can be  set by the property-sheet  button.  The properites
+      of the text fields shown in  the main graphics window are set by
+      the text button.</p>
+    
+    <hr>
+    <h6>Page made for <tt>SegEditor</tt><br>
+      Last edited on Aug. 7, 2018</h6>
+    
+  </body>
+</html>
