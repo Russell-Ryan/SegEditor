@@ -19,6 +19,6 @@ Once the GUI is loaded, there is a button for help (indicated by ![help](etc/bit
 
 
 ## Additional Help
-Please contact [Russell](mailto:rryan@stsci.edu) with additional problems or issues, or if you are interested in contributing.
+Please contact <a href="mailto:rryan@stsci.edu?subject=SegEditor GitHub">Russell</a> with additional problems or issues, or if you are interested in contributing.
 
-<a href="mailto:rryan@stsci.edu?subject=hello world">Email Me!</a>
+
