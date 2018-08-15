@@ -15,7 +15,7 @@ IDL> segeditor,SEGFILE,IMGFILE,[/help,_EXTRA=_extra]
 where SEGFILE and IMGFILE are the full paths to a segmentation image and its corresponding direct image.  The /help flag will display a basic calling sequence, and _extra facilitates additional keyword arguments.
 
 
-Once the GUI is loaded, there is a button for help (indicated by ![help](etc/bitmaps/help.bmp)), which will explain the various functionality.  But one also refer to the astro-ph article for more details and/or to reference (if you find this code was useful in preparing your data or manuscript [(Ryan 2018)](https://arxiv.org/abs/1808.04378).
+Once the GUI is loaded, there is a button for help (indicated by ![help](etc/bitmaps/help.bmp)), which will explain the various functionality.  But one also refer to the astro-ph article for more details and/or to reference (if you find this code was useful in preparing your data or manuscript [(Ryan 2018)](http://adsabs.harvard.edu/abs/2018arXiv180804378R).
 
 
 ## Additional Help
