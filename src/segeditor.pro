@@ -16,8 +16,6 @@ pro segeditor,seg,img,HELP=help,_EXTRA=_extra
   endif
 
 
-
-;  filter=['*.fit','*.fits','*.fits.gz','*.fit.gz']
   filter=[['*fit;*fits','*fit.gz;*fits.gz'],$
           ['fits','zipped fits']]
 

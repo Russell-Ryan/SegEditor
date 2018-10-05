@@ -614,8 +614,9 @@ pro segeditor::DisassociateRegions,event
   if self.ValidXY(x,y) then begin
      old=(*self.subseg)[x,y]
      if old ne 0 then begin
+
         tmp=label_region((*self.subseg) ne 0)
-        gpix=where(tmp eq tmp[x,y],npix)
+        gpix=where(tmp eq tmp[x,y] and (*self.subseg) eq old,npix)        
         if npix ne 0 then begin
            new=self.seg->max()+1
            self.seg->GetProperty,tile=tile
