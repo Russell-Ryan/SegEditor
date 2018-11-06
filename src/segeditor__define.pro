@@ -349,11 +349,13 @@ pro segeditor::UpdateCoord,event
   self->ConvertXY,event.x,event.y,x,y,view=view
   self.xy=[event.x,event.y]
 
+  ;(xx,yy) will be coord in the original frame
+  ;(x,y) will be coord in the frame shown (according to self.ast)
   self.Seg->Value,x,y,xx,yy,s
   self.Img->Value,x,y,xx,yy,i
 
   if self.wcs then begin
-     self->xy2ad,xx,yy,a,d
+     self->xy2ad,x,y,a,d
      case self.coord of
         'decimal': str=[string(a,f='(F0.8)'),string(d,f='(F0.7)')]
         'sexagesimal': begin
@@ -960,12 +962,15 @@ pro segeditor::LoadTile,x0,x1,y0,y1,OKAY=okay,LAST=last
   endif
   seg=self.seg->GetImage(xx0,xx1,yy0,yy1,header=header,dim=dim,LAST=last)
 
+
+  
   okay=dim[0] ne 0
   if okay then begin
-     *self.subimg=self.img->GetImage(x0,x1,y0,y1,LAST=last)
+     *self.subimg=self.img->GetImage(x0,x1,y0,y1,LAST=last,header=header)
      *self.subseg=temporary(seg)
 
      self.oSeg->SetProperty,data=reform((*self.rgb)[*,*self.subseg],[3,dim])
+
      
      self.ast.naxis=size(*self.subimg,/dim)
      self.ast.crpix=sxpar(header,'CRPIX*')
@@ -977,7 +982,7 @@ pro segeditor::LoadTile,x0,x1,y0,y1,OKAY=okay,LAST=last
      self.ast.cd[0,1]=sxpar(header,'CD1_2')
      self.ast.cd[1,1]=sxpar(header,'CD2_2')
      self.wcs=array_equal(self.ast.ctype,['RA---TAN','DEC--TAN'])
-
+     
      self->SetImage
 
   endif
