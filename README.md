@@ -18,7 +18,7 @@ where SEGFILE and IMGFILE are the full paths to a segmentation image and its cor
 Once the GUI is loaded, there is a button for help (indicated by ![help](etc/bitmaps/help.bmp)), which will explain the various functionality.  But one also refer to the astro-ph article for more details and/or to reference (if you find this code was useful in preparing your data or manuscript [(Ryan 2018)](http://adsabs.harvard.edu/abs/2018arXiv180804378R).
 
 ## To Do Ideas:
-1. Add new segmap button.
+1. Add new segmap button?
 
 
 
