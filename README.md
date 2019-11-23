@@ -1,5 +1,10 @@
 # Segmentation Editor: SegEditor
 
+[![DOI](https://zenodo.org/badge/143894312.svg)](https://zenodo.org/badge/latestdoi/143894312)
+
+
+
+
 ![SegEditor](etc/help/segeditor.png)
 
 A Graphical-User Interface (GUI) for editing segmentation maps for IDL.
