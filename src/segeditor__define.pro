@@ -340,8 +340,8 @@ pro segeditor::xy2ad,x,y,a,d
   
   xsi=self.ast.cd[0,0]*dx+self.ast.cd[0,1]*dy
   eta=self.ast.cd[1,0]*dx+self.ast.cd[1,1]*dy
-  
   wcsxy2sph,xsi,eta,a,d,ctype=self.ast.ctype,crval=self.ast.crval
+
 end
   
 
@@ -360,13 +360,13 @@ pro segeditor::UpdateCoord,event
         'decimal': str=[string(a,f='(F0.8)'),string(d,f='(F0.7)')]
         'sexagesimal': begin
            a=sixty(a/15d)
-           a=strjoin([string(a[0],f='(I3)'),string(a[1],f='(I02)'),$
-                      string(a[2],f='(F5.2)')],':')
+           a=strjoin([' '+string(a[0],f='(I02)'),string(a[1],f='(I02)'),$
+                      string(a[2],f='(F05.2)')],':')
 
            d=sixty(d)
-           d=strjoin([string(d[0],f='(I+3)'),string(d[1],f='(I02)'),$
-                      string(d[2],f='(F4.1)')],':')
-           str=[a,d]    
+           d=strjoin([string(d[0],f='(I+03)'),string(d[1],f='(I02)'),$
+                      string(d[2],f='(F04.1)')],':')
+           str=[a,d]
         end
         
         else: stop,'unknown RA/Dec coordinates'
@@ -976,11 +976,17 @@ pro segeditor::LoadTile,x0,x1,y0,y1,OKAY=okay,LAST=last
      self.ast.crpix=sxpar(header,'CRPIX*')
      self.ast.ctype=sxpar(header,'CTYPE*')
      self.ast.crval=sxpar(header,'CRVAL*')
+     
+     self.ast.cd[0,0]=sxpar(header,'CD1_1',count=cd11)
+     self.ast.cd[1,0]=sxpar(header,'CD2_1',count=cd21)
+     self.ast.cd[0,1]=sxpar(header,'CD1_2',count=cd12)
+     self.ast.cd[1,1]=sxpar(header,'CD2_2',count=cd22)
 
-     self.ast.cd[0,0]=sxpar(header,'CD1_1')
-     self.ast.cd[1,0]=sxpar(header,'CD2_1')
-     self.ast.cd[0,1]=sxpar(header,'CD1_2')
-     self.ast.cd[1,1]=sxpar(header,'CD2_2')
+     if cd11 eq 0 then self.ast.cd[0,0]=sxpar(header,'PC1_1')
+     if cd12 eq 0 then self.ast.cd[0,1]=sxpar(header,'PC1_2')
+     if cd21 eq 0 then self.ast.cd[1,0]=sxpar(header,'PC2_1')
+     if cd22 eq 0 then self.ast.cd[1,1]=sxpar(header,'PC2_2')
+          
      self.wcs=array_equal(self.ast.ctype,['RA---TAN','DEC--TAN'])
      
      self->SetImage
@@ -1035,8 +1041,8 @@ pro segeditor::SetMinMax,sub
      mx+=0.01
   endif
   self.minmax=[mn,mx]
-  self.oMin->SetProperty,string=string(self.minmax[0],f='(F0.3)')
-  self.oMax->SetProperty,string=string(self.minmax[1],f='(F0.3)')
+  self.oMin->SetProperty,string='min: '+string(self.minmax[0],f='(F0.3)')
+  self.oMax->SetProperty,string='max: '+string(self.minmax[1],f='(F0.3)')
 end
 
 pro segeditor::Print,event
